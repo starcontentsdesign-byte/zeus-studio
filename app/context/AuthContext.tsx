@@ -18,7 +18,11 @@ type AuthContextValue = {
   loading: boolean;
   error: string | null;
   signInWithEmail: (email: string, password: string) => Promise<void>;
-  signUpWithEmail: (name: string, email: string, password: string) => Promise<void>;
+  signUpWithEmail: (
+    name: string,
+    email: string,
+    password: string
+  ) => Promise<{ email: string; emailConfirmationRequired: boolean }>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -90,15 +94,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUpWithEmail = useCallback(
     async (name: string, email: string, password: string) => {
       setError(null);
-      const { error: signUpError } = await supabase.auth.signUp({
+      const emailRedirectTo =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/auth/callback`
+          : undefined;
+
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: name ? { data: { full_name: name } } : undefined,
+        options: {
+          ...(name ? { data: { full_name: name } } : {}),
+          ...(emailRedirectTo ? { emailRedirectTo } : {})
+        }
       });
       if (signUpError) {
         setError(signUpError.message);
         throw signUpError;
       }
+
+      return {
+        email,
+        emailConfirmationRequired: !data.session
+      };
     },
     [supabase]
   );

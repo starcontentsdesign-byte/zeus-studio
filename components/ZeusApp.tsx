@@ -13,6 +13,7 @@ import MenuOverlay from '@/components/MenuOverlay';
 import MyPageModal from '@/components/MyPageModal';
 import ServicesSection from '@/components/ServicesSection';
 import StudioSection from '@/components/StudioSection';
+import { useToast } from '@/components/ui/Toasts/use-toast';
 import { isAdminUserLike } from '@/utils/service-posts';
 
 type AuthMode = 'login' | 'signup';
@@ -33,8 +34,24 @@ const getErrorMessage = (error: unknown, fallback: string) => {
   return fallback;
 };
 
+const normalizeAuthErrorMessage = (error: unknown, fallback: string) => {
+  const message = getErrorMessage(error, fallback);
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes('email not confirmed')) {
+    return '이메일 인증이 아직 안 됐다. 가입한 메일함에서 인증 링크부터 눌러라.';
+  }
+
+  if (normalized.includes('invalid login credentials')) {
+    return '이메일이나 비밀번호가 틀렸다.';
+  }
+
+  return message;
+};
+
 export function ZeusApp() {
   const router = useRouter();
+  const { toast } = useToast();
   const { user, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -150,7 +167,7 @@ export function ZeusApp() {
       setIsAuthOpen(false);
       router.refresh();
     } catch (error) {
-      setAuthError(getErrorMessage(error, '로그인에 실패했습니다.'));
+      setAuthError(normalizeAuthErrorMessage(error, '로그인에 실패했습니다.'));
     } finally {
       setAuthPending(false);
     }
@@ -161,11 +178,17 @@ export function ZeusApp() {
     setAuthError(null);
 
     try {
-      await signUpWithEmail(name, email, password);
+      const result = await signUpWithEmail(name, email, password);
       setIsAuthOpen(false);
+      toast({
+        title: result.emailConfirmationRequired ? '인증 메일 보냈다' : '회원가입 완료',
+        description: result.emailConfirmationRequired
+          ? `${result.email} 로 인증 메일 보냈다. 메일함에서 인증 링크 누르고 다시 로그인해라.`
+          : `${result.email} 계정 가입이 완료됐다. 이제 바로 로그인하면 된다.`
+      });
       router.refresh();
     } catch (error) {
-      setAuthError(getErrorMessage(error, '회원가입에 실패했습니다.'));
+      setAuthError(normalizeAuthErrorMessage(error, '회원가입에 실패했습니다.'));
     } finally {
       setAuthPending(false);
     }
@@ -192,7 +215,7 @@ export function ZeusApp() {
       await signInWithGoogle();
       setAuthPending(false);
     } catch (error) {
-      setAuthError(getErrorMessage(error, 'Google 로그인에 실패했습니다.'));
+      setAuthError(normalizeAuthErrorMessage(error, 'Google 로그인에 실패했습니다.'));
       setAuthPending(false);
       return;
     }
