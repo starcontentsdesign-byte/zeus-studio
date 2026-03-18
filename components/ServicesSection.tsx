@@ -1,54 +1,30 @@
 export default function ServicesSection() {
   return (
-    <section id="services" className="relative min-h-screen bg-black py-20 px-8">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-4xl md:text-5xl mb-12">Services</h2>
-        
-        <div className="space-y-8">
-          <div className="relative mx-auto w-full max-w-2xl">
-            <img
-              src="https://images.unsplash.com/photo-1724185773486-0b39642e607e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb3VuZCUyMHdhdmUlMjBhdWRpbyUyMG1peGluZ3xlbnwxfHx8fDE3NzAyNTk0MTh8MA&ixlib=rb-4.1.0&q=80&w=1080"
-              alt="Sound Production"
-              className="w-full h-auto object-cover"
-            />
-          </div>
+    <section id="services" className="zeus-section zeus-services-section">
+      <div className="zeus-section-shell zeus-services-content">
+        <div className="zeus-section-intro zeus-section-intro--lined">
+          <h2 className="zeus-section-heading">Services</h2>
+          <p className="zeus-services-copy">
+            제우스 스튜디오는 한국어는 물론 영어, 중국어, 일본어, 프랑스어, 스페인어 등 전세계
+            <br />
+            30개국 언어의 외국어 번역 및 성우 더빙 서비스를 제공합니다.
+            <br />
+            애니메이션, 광고, 게임, 오디오 북 등 각 종 콘텐츠에 맞는 성우를 추천하여
+            <br />
+            최상의 퀄리티를 보장합니다.
+            <br />
+            <br />
+            x Zeus Studio provides global translation and voice dubbing in 30 different languages
+            <br />
+            including Korean, English, Chinese, Japanese, French, Spanish etc.
+            <br />
+            We recommend the best suitable voice actor for each content animations, commercials,
+            <br />
+            games, audio book and result into high quality outputs.
+          </p>
 
-          <div className="mt-12 grid gap-6 text-sm md:grid-cols-2">
-            <div className="space-y-3 border border-white/10 p-6">
-              <h3 className="text-lg tracking-wide">Recording & Mixing</h3>
-              <p className="text-xs leading-relaxed opacity-80">
-                최고급 장비와 전문 엔지니어가
-                <br />
-                완벽한 사운드를 제작합니다
-              </p>
-            </div>
-
-            <div className="space-y-3 border border-white/10 p-6">
-              <h3 className="text-lg tracking-wide">Dubbing & Localization</h3>
-              <p className="text-xs leading-relaxed opacity-80">
-                다국어 더빙과 현지화 서비스로
-                <br />
-                글로벌 콘텐츠를 완성합니다
-              </p>
-            </div>
-
-            <div className="space-y-3 border border-white/10 p-6">
-              <h3 className="text-lg tracking-wide">Sound Design</h3>
-              <p className="text-xs leading-relaxed opacity-80">
-                영상과 게임을 위한
-                <br />
-                창의적인 사운드 디자인
-              </p>
-            </div>
-
-            <div className="space-y-3 border border-white/10 p-6">
-              <h3 className="text-lg tracking-wide">Audio Post Production</h3>
-              <p className="text-xs leading-relaxed opacity-80">
-                영화, 드라마, 광고를 위한
-                <br />
-                전문 오디오 포스트 프로덕션
-              </p>
-            </div>
+          <div className="zeus-services-image">
+            <img src="/images/studio/zeusstudio2.png" alt="ZEUS services booth" />
           </div>
         </div>
       </div>

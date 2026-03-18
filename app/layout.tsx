@@ -8,6 +8,7 @@ import {
 
 import './styles/theme.css';
 import './globals.css';
+import './styles/zeus-real.css';
 import Providers from './providers';
 import { BRAND_NAME } from '@/utils/branding';
 
