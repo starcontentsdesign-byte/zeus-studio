@@ -99,9 +99,6 @@ export default function StudioSection({
             스튜디오 현장 사진이랑 작업 기록을 게시물처럼 바로 보게 다시 붙여놨다.
           </p>
           <div className="zeus-studio-toolbar-actions">
-            <a href="/posts" className="zeus-studio-action">
-              All Posts
-            </a>
             {isAdmin ? (
               <button
                 type="button"
