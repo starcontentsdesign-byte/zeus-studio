@@ -95,9 +95,6 @@ export default function StudioSection({
         </div>
 
         <div className="zeus-studio-toolbar">
-          <p className="zeus-studio-toolbar-copy">
-            스튜디오 현장 사진이랑 작업 기록을 게시물처럼 바로 보게 다시 붙여놨다.
-          </p>
           <div className="zeus-studio-toolbar-actions">
             {isAdmin ? (
               <button
@@ -150,10 +147,6 @@ export default function StudioSection({
 
         {!isLoading && !error && !hasPosts ? (
           <div className="zeus-studio-empty">
-            <p className="zeus-studio-status">
-              아직 등록된 게시물이 없어서 기존 스튜디오 컷으로 자리만 살려놨다.
-            </p>
-
             <div className="zeus-studio-grid">
               {studioImages.map((image) => (
                 <div
