@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import CommunityBoard from '@/components/CommunityBoard';
-import styles from '@/components/zeus-classic.module.css';
 
 export const dynamic = 'force-dynamic';
 
 export default function CommunityPage() {
   return (
-    <main className={`${styles.root} min-h-screen bg-black px-4 pb-16 pt-24 text-white sm:px-6 lg:px-8`}>
+    <main className="min-h-screen bg-black px-4 pb-16 pt-24 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>

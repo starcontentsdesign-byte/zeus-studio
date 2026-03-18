@@ -1,177 +1,141 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 
 import { useAuth } from '@/app/context/AuthContext';
 import AboutSection from '@/components/AboutSection';
 import AuthModal from '@/components/AuthModal';
-import CommunityLandingSection from '@/components/CommunityLandingSection';
+import CartModal, { type CartItem } from '@/components/CartModal';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { HeroSection } from '@/components/HeroSection';
 import MenuOverlay from '@/components/MenuOverlay';
 import MyPageModal from '@/components/MyPageModal';
-import StudioLandingSection from '@/components/StudioLandingSection';
-import styles from '@/components/zeus-classic.module.css';
+import ServicesSection from '@/components/ServicesSection';
+import ShopSection from '@/components/ShopSection';
+import StudioSection from '@/components/StudioSection';
 
-type StudioLandingPost = {
-  id: string;
-  title: string;
-  content: string;
-  imageUrl: string | null;
-  createdAt: string | null;
-};
-
-type CommunityLandingPost = {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string | null;
-  isNotice: boolean;
-};
-
-type ZeusAppProps = {
-  initialStudioPosts: StudioLandingPost[];
-  initialCommunityPosts: CommunityLandingPost[];
-};
-
-export function ZeusApp({
-  initialStudioPosts,
-  initialCommunityPosts
-}: ZeusAppProps) {
+export function ZeusApp() {
+  const { user, signInWithEmail, signUpWithEmail } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isMyPageOpen, setIsMyPageOpen] = useState(false);
+  const [authDefaultTab, setAuthDefaultTab] = useState<'login' | 'signup'>('login');
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [myPageOpen, setMyPageOpen] = useState(false);
-  const { user, signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const isAuthenticated = Boolean(user);
+  const addToCart = (item: Omit<CartItem, 'id' | 'quantity'>) => {
+    setCartItems((prev) => {
+      const existingItem = prev.find(
+        (entry) =>
+          entry.productId === item.productId &&
+          entry.size === item.size &&
+          entry.color === item.color
+      );
 
-  const openLogin = () => {
-    setAuthMode('login');
-    setAuthError(null);
-    setAuthOpen(true);
+      if (existingItem) {
+        return prev.map((entry) =>
+          entry.id === existingItem.id
+            ? { ...entry, quantity: entry.quantity + 1 }
+            : entry
+        );
+      }
+
+      return [...prev, { ...item, id: Date.now(), quantity: 1 }];
+    });
   };
 
-  const openSignup = () => {
-    setAuthMode('signup');
-    setAuthError(null);
-    setAuthOpen(true);
+  const removeFromCart = (id: number) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const openAccount = () => {
-    setMyPageOpen(true);
+  const updateQuantity = (id: number, quantity: number) => {
+    setCartItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+    );
+  };
+
+  const openAuth = (tab: 'login' | 'signup' = 'login') => {
+    setAuthDefaultTab(tab);
+    setAuthError(null);
+    setIsAuthOpen(true);
+  };
+
+  const handleAuthClick = () => {
+    if (user) {
+      setIsMyPageOpen(true);
+      return;
+    }
+
+    openAuth('login');
   };
 
   return (
-    <div className={`${styles.root} min-h-screen bg-black text-white`}>
+    <div className="min-h-screen bg-black text-white">
       <Header
         onMenuClick={() => setIsMenuOpen(true)}
-        onAuthClick={openLogin}
-        onMyPageClick={openAccount}
-        isAuthenticated={isAuthenticated}
+        onCartClick={() => setIsCartOpen(true)}
+        onAuthClick={handleAuthClick}
+        cartItemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
       />
 
-      <MenuOverlay
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        isAuthenticated={isAuthenticated}
-        onAuthClick={openLogin}
-        onSignupClick={openSignup}
-        onMyPageClick={openAccount}
+      <MenuOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+
+      <CartModal
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        items={cartItems}
+        onRemoveItem={removeFromCart}
+        onUpdateQuantity={updateQuantity}
       />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        defaultTab={authDefaultTab}
+        loading={authLoading}
+        error={authError}
+        onLogin={async (email, password) => {
+          try {
+            setAuthLoading(true);
+            setAuthError(null);
+            await signInWithEmail(email, password);
+            setIsAuthOpen(false);
+          } catch (error: any) {
+            setAuthError(error?.message ?? '로그인 실패');
+          } finally {
+            setAuthLoading(false);
+          }
+        }}
+        onSignup={async (name, email, password) => {
+          try {
+            setAuthLoading(true);
+            setAuthError(null);
+            await signUpWithEmail(name, email, password);
+            setIsAuthOpen(false);
+          } catch (error: any) {
+            setAuthError(error?.message ?? '회원가입 실패');
+          } finally {
+            setAuthLoading(false);
+          }
+        }}
+      />
+
+      {isMyPageOpen ? (
+        <MyPageModal open={isMyPageOpen} onOpenChange={setIsMyPageOpen} />
+      ) : null}
 
       <main>
         <HeroSection />
         <AboutSection />
-        <StudioLandingSection posts={initialStudioPosts} isAuthenticated={isAuthenticated} />
-        <CommunityLandingSection
-          posts={initialCommunityPosts}
-          isAuthenticated={isAuthenticated}
-        />
-
-        <section className="border-t border-white/10 bg-black px-8 py-16">
-          <div className="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-end md:justify-between">
-            <div className="space-y-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-white/50">Control</p>
-              <h2 className="text-4xl tracking-[0.14em] md:text-5xl">ADMIN ACCESS</h2>
-              <p className="max-w-2xl text-sm leading-relaxed text-white/70">
-                관리자 로그인 이후 게시물 추가, 수정, 삭제와 커뮤니티 관리 기능은 그대로 살아있다.
-                랜딩 디자인만 원래 ZEUS 톤으로 되돌리고, 운영은 별도 화면으로 빼놨다.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/posts"
-                className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
-              >
-                OPEN POSTS
-              </Link>
-              <Link
-                href="/community"
-                className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
-              >
-                OPEN BOARD
-              </Link>
-            </div>
-          </div>
-        </section>
+        <ServicesSection />
+        <StudioSection />
+        <ShopSection onAddToCart={addToCart} />
       </main>
 
       <Footer />
-
-      {authOpen ? (
-        <AuthModal
-          open={authOpen}
-          mode={authMode}
-          onClose={() => setAuthOpen(false)}
-          onSwitchMode={(mode) => {
-            setAuthMode(mode);
-            setAuthError(null);
-          }}
-          loading={authLoading}
-          error={authError}
-          onLogin={async (email, password) => {
-            try {
-              setAuthLoading(true);
-              setAuthError(null);
-              await signInWithEmail(email, password);
-              setAuthOpen(false);
-            } catch (error: any) {
-              setAuthError(error?.message ?? '로그인 실패');
-            } finally {
-              setAuthLoading(false);
-            }
-          }}
-          onSignup={async (name, email, password) => {
-            try {
-              setAuthLoading(true);
-              setAuthError(null);
-              await signUpWithEmail(name, email, password);
-              setAuthOpen(false);
-            } catch (error: any) {
-              setAuthError(error?.message ?? '회원가입 실패');
-            } finally {
-              setAuthLoading(false);
-            }
-          }}
-          onGoogle={() => {
-            setAuthError(null);
-            setAuthLoading(true);
-            signInWithGoogle().catch((error: any) => {
-              setAuthError(error?.message ?? 'Google 로그인 실패');
-              setAuthLoading(false);
-            });
-          }}
-        />
-      ) : null}
-
-      {myPageOpen ? (
-        <MyPageModal open={myPageOpen} onOpenChange={setMyPageOpen} />
-      ) : null}
     </div>
   );
 }
