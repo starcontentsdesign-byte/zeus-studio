@@ -193,6 +193,7 @@ export default function MyPageModal({
   const name = profileForm.name || user?.name || '관리자';
   const email = user?.email ?? 'admin@example.com';
   const initial = name.trim().charAt(0) || '관';
+  const isAdminTheme = activeTab === 'admin';
   const appleFontClass =
     '[font-family:var(--font-sans),"IBM Plex Sans KR","Pretendard",sans-serif]';
   const glassIconButtonClass =
@@ -530,15 +531,21 @@ export default function MyPageModal({
           role="dialog"
           aria-modal="true"
           aria-labelledby="mypage-title"
-          className={`mypage-shell max-h-[calc(100dvh-0.75rem)] w-full max-w-3xl overflow-hidden rounded-[1.15rem] ${appleFontClass}`}
+          className={`mypage-shell ${isAdminTheme ? 'mypage-shell--admin' : ''} max-h-[calc(100dvh-0.75rem)] w-full max-w-3xl overflow-hidden rounded-[1.15rem] ${appleFontClass}`}
           onKeyDown={handleKeyDown}
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="flex items-start justify-between border-b border-stone-900/10 px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-6 md:px-8">
+          <div
+            className={`flex items-start justify-between px-4 pb-4 pt-4 sm:px-6 sm:pb-5 sm:pt-6 md:px-8 ${
+              isAdminTheme ? 'border-b border-white/10' : 'border-b border-stone-900/10'
+            }`}
+          >
             <div className="min-w-0 flex-1">
               <h2
                 id="mypage-title"
-                className="display-font text-[1.45rem] font-semibold tracking-[0.02em] text-stone-950 sm:text-[1.9rem]"
+                className={`display-font text-[1.45rem] font-semibold tracking-[0.02em] sm:text-[1.9rem] ${
+                  isAdminTheme ? 'text-white' : 'text-stone-950'
+                }`}
               >
                 마이페이지
               </h2>
