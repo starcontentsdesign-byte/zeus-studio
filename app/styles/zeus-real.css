@@ -379,23 +379,28 @@
 
 .zeus-home-tablecell {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 
 .zeus-home-row {
-  padding: 162px 16px 150px;
+  padding: 162px 16px 58px;
+}
+
+.zeus-home-copy {
+  width: min(420px, calc(100% - 32px));
+  margin: 0 auto;
 }
 
 .zeus-main-word {
-  width: min(420px, 38vw);
-  min-width: 280px;
-  margin: 0 auto 14px;
+  width: min(210px, 18vw);
+  min-width: 150px;
+  margin: 0 auto 10px;
 }
 
 .zeus-bead {
   color: rgba(255, 255, 255, 0.78);
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 .zeus-section {
@@ -769,19 +774,19 @@
 
   .zeus-home-row {
     padding-top: 120px;
-    padding-bottom: 120px;
+    padding-bottom: 42px;
   }
 
   .zeus-main-word {
-    width: min(70%, 300px);
-    min-width: 240px;
-    margin-bottom: 20px;
+    width: min(52%, 180px);
+    min-width: 140px;
+    margin-bottom: 12px;
   }
 
   .zeus-bead {
-    width: 90%;
+    width: min(300px, 90%);
     margin: 0 auto;
-    font-size: 11px;
+    font-size: 10px;
     line-height: 1.6;
   }
 

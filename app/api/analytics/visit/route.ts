@@ -110,7 +110,8 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => ({}))) as VisitTrackBody;
   const path = sanitizePath(body.path);
-  const userAgent = headers().get('user-agent')?.trim().slice(0, 255) || null;
+  const headerStore = await headers();
+  const userAgent = headerStore.get('user-agent')?.trim().slice(0, 255) || null;
 
   const rateLimit = consumeRateLimit({
     key: existingVisitorId
