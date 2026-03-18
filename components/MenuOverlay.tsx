@@ -83,19 +83,9 @@ export default function MenuOverlay({
               <div className="zeus-menu-account">
                 <p className="zeus-menu-account-label">SIGNED IN</p>
                 <p className="zeus-menu-account-email">{userEmail || 'admin@zeus-studio.net'}</p>
-                {isAdmin ? (
-                  <span className="zeus-menu-account-badge">ADMIN</span>
-                ) : (
-                  <p className="zeus-menu-account-note">
-                    관리자 계정으로 로그인하면 관리자페이지 메뉴가 열린다.
-                  </p>
-                )}
+                {isAdmin ? <span className="zeus-menu-account-badge">ADMIN</span> : null}
               </div>
-            ) : (
-              <p className="zeus-menu-account-note">
-                메뉴에서 로그인하면 관리자 계정으로 관리자페이지를 열 수 있다.
-              </p>
-            )}
+            ) : null}
 
             <div className="zeus-menu-action-list">
               {!isAuthenticated ? (
