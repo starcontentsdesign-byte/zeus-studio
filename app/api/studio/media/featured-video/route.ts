@@ -26,6 +26,12 @@ const hasMissingFreePublicColumnError = (error: unknown) => {
   return combined.includes('is_free_public') && combined.includes('studio_media');
 };
 
+const isR2Disabled = () =>
+  !process.env.R2_ENDPOINT?.trim() ||
+  !process.env.R2_BUCKET_NAME?.trim() ||
+  !process.env.R2_ACCESS_KEY_ID?.trim() ||
+  !process.env.R2_SECRET_ACCESS_KEY?.trim();
+
 const findFeaturedVideo = async () => {
   const adminClient = createAdminClient();
 
@@ -77,6 +83,10 @@ const findFeaturedVideo = async () => {
 
 export async function GET() {
   try {
+    if (isR2Disabled()) {
+      return NextResponse.json({ url: null, mime: null, source: 'disabled' });
+    }
+
     const featuredVideo = await findFeaturedVideo();
 
     if (!featuredVideo) {
@@ -94,6 +104,9 @@ export async function GET() {
       source: featuredVideo.source
     });
   } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Missing R2_')) {
+      return NextResponse.json({ url: null, mime: null, source: 'disabled' });
+    }
     console.error('[studio/media/featured-video] failed to resolve video', error);
     return jsonError(
       error instanceof Error ? error.message : '대표 영상을 불러오지 못했습니다.',

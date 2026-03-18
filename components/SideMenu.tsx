@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
-import { X, ShoppingCart } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
-import { useCart } from '@/app/context/CartContext';
 
 interface SideMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  onCartClick?: () => void;
   onLoginClick?: () => void;
   onMyPageClick?: () => void;
 }
@@ -16,7 +14,6 @@ interface SideMenuProps {
 const menuItems = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
-  { label: 'Goods', href: '#services' },
   { label: 'Studio', href: '#studio' },
   { label: 'Community', href: '#community' }
 ];
@@ -24,14 +21,10 @@ const menuItems = [
 export default function SideMenu({
   isOpen,
   onClose,
-  onCartClick,
   onLoginClick,
   onMyPageClick
 }: SideMenuProps) {
   const auth = useAuth();
-  const { itemCount } = useCart();
-
-  const totalItems = itemCount;
   const isAuthenticated = !!auth?.isAuthenticated;
   const user = auth?.user;
 
@@ -41,11 +34,6 @@ export default function SideMenu({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
-
-  const handleCartClick = () => {
-    onCartClick?.();
-    onClose();
-  };
 
   const handleLoginClick = () => {
     onLoginClick?.();
@@ -121,14 +109,6 @@ export default function SideMenu({
                 MY PAGE
               </button>
             )}
-
-            <button
-              onClick={handleCartClick}
-              className="y2k-button y2k-button-primary y2k-button-fade-micro w-full justify-center"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              CART{totalItems > 0 ? ` (${totalItems})` : ''}
-            </button>
 
             {isAuthenticated ? (
               <>

@@ -120,34 +120,13 @@ type StudioDisplayRow = {
 
 const STUDIO_COLUMNS_PER_ROW = 3;
 const MARQUEE_GAP_REM = 1; // gap-4 == 1rem
-const PREMIUM_ROW_PRICE_DISPLAY = 79000;
-const FREE_TRIAL_POST_LIMIT = 3;
+const FREE_TRIAL_POST_LIMIT = Number.MAX_SAFE_INTEGER;
 const STUDIO_ROW_ACCESS_RULES: StudioRowAccessRule[] = [
   {
     key: 'free',
-    rowLabel: '무료 일반 멤버십',
-    membershipLabel: '무료 체험 3개',
+    rowLabel: 'Studio Archive',
+    membershipLabel: '전체 공개',
     requiredLevel: 0
-  },
-  {
-    key: 'tier_4900',
-    rowLabel: '가로 영상 플랫폼',
-    membershipLabel: '멤버십 월 4,900원 · 가로 영상',
-    requiredLevel: 1
-  },
-  {
-    key: 'tier_13900',
-    rowLabel: '숏폼 영상 플랫폼',
-    membershipLabel: '멤버십 월 13,900원 · 숏폼',
-    requiredLevel: 2
-  },
-  {
-    key: 'tier_79000',
-    rowLabel: '포토+글 블로그 플랫폼',
-    membershipLabel: `멤버십 월 ${PREMIUM_ROW_PRICE_DISPLAY.toLocaleString(
-      'ko-KR'
-    )}원 · 블로그`,
-    requiredLevel: 3
   }
 ];
 
@@ -453,19 +432,6 @@ function StudioDetailModal({
                   <DialogPrimitive.Title className="text-2xl font-semibold tracking-tight text-white md:text-4xl">
                     {post.title?.trim() || 'Untitled Post'}
                   </DialogPrimitive.Title>
-                  <div className="pt-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onClose();
-                        onOpenShorts(post.id);
-                      }}
-                      className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/20"
-                    >
-                      <Clapperboard className="h-3.5 w-3.5" />
-                      숏폼 모드
-                    </button>
-                  </div>
                 </div>
 
                 <div className="h-px w-full bg-white/10" />
@@ -507,94 +473,16 @@ function StudioDetailModal({
                 <div className="h-px w-full bg-white/10" />
 
                 <section className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="text-lg font-semibold text-white md:text-xl">
-                        Studio 멤버십 전용 미디어
-                      </h4>
-                      {hasActiveMembership && (
-                        <span className="inline-flex items-center rounded-full border border-emerald-300/30 bg-emerald-500/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-100">
-                          ACTIVE
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm leading-relaxed text-white/55">
-                      기본은 멤버십 전용이며, 일반 공개 체크 미디어는 비구독자도
-                      볼 수 있습니다.
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                    <h4 className="text-lg font-semibold text-white md:text-xl">
+                      게시물 안내
+                    </h4>
+                    <p className="mt-2 text-sm leading-relaxed text-white/60">
+                      현재 스튜디오 섹션은 사진 게시물 중심으로 운영 중입니다.
+                      대표 이미지와 본문만 사용하며, 별도 멤버십 잠금이나 R2
+                      전용 미디어 재생 기능은 비활성화되어 있습니다.
                     </p>
                   </div>
-
-                  {authLoading || viewerMembershipTierLoading ? (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/70">
-                      멤버십 상태를 확인하는 중입니다...
-                    </div>
-                  ) : isRowTierLocked ? (
-                    <div className="rounded-2xl border border-amber-300/20 bg-amber-500/10 p-5">
-                      <p className="text-sm font-semibold text-white">
-                        {requiredTierLabel} 이상에서만 이 게시물의 전용 미디어를
-                        볼 수 있습니다.
-                      </p>
-                      <p className="mt-2 text-sm text-white/70">
-                        일반 공개 체크된 미디어는 비구독자도 볼 수 있지만, 전용
-                        미디어 전체는 해당 등급 가입자에게만 열립니다.
-                      </p>
-                      <div className="mt-4">
-                        {user ? (
-                          <StudioSubscribeButton
-                            studioPostId={post.id}
-                            className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-neutral-200"
-                          />
-                        ) : (
-                          <Link
-                            href="/signin"
-                            className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-neutral-200"
-                          >
-                            로그인
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  ) : !user ? (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                      <p className="text-sm font-semibold text-white">
-                        멤버십 가입이 필요합니다.
-                      </p>
-                      <p className="mt-2 text-sm text-white/60">
-                        로그인 후 멤버십 가입을 진행하면 전용 미디어를 볼 수
-                        있습니다.
-                      </p>
-                      <div className="mt-4">
-                        <Link
-                          href="/signin"
-                          className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-neutral-200"
-                        >
-                          로그인
-                        </Link>
-                      </div>
-                    </div>
-                  ) : !hasActiveMembership ? (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                      <p className="text-sm font-semibold text-white">
-                        Studio 전용 미디어는 구독자 전용입니다.
-                      </p>
-                      <p className="mt-2 text-sm text-white/60">
-                        멤버십 가입 후 이 게시글의 원본 이미지/영상을 볼 수
-                        있습니다.
-                      </p>
-                      <div className="mt-4">
-                        <StudioSubscribeButton
-                          studioPostId={post.id}
-                          className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-neutral-200"
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {!authLoading &&
-                  !viewerMembershipTierLoading &&
-                  !isRowTierLocked ? (
-                    <StudioProtectedMedia studioPostId={post.id} />
-                  ) : null}
                 </section>
               </div>
             </div>
@@ -1822,9 +1710,8 @@ export default function StudioSection({
       const rows = Array.isArray(queryResult.data)
         ? (queryResult.data as StudioPost[]).map((row) => ({
             ...row,
-            required_membership_level: normalizeRequiredMembershipLevel(
-              row.required_membership_level
-            )
+            required_membership_level: 0,
+            required_membership_label: '전체 공개'
           }))
         : [];
       setStudioPosts(rows);
@@ -2361,31 +2248,18 @@ export default function StudioSection({
               </p>
               <h2 className="section-title !mt-2 !text-[clamp(1.8rem,4vw,3rem)]">Studio Flux</h2>
               <p className="max-w-2xl text-sm leading-relaxed text-cyan-50/72 md:text-base">
-                무료 일반 멤버십은 체험판 3개만 공개되고, 월 4,900은 가로 영상,
-                월 13,900은 숏폼, 월 79,000은 포토+글 블로그를 이용합니다.
+                현재 프로젝트는 ZEUS STUDIO 사진 게시물과 비하인드 아카이브를
+                전체 공개형으로 운영합니다. 관리자에서 사진 게시물을 추가,
+                수정, 삭제하면 이 섹션에 바로 반영됩니다.
               </p>
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 <span className="text-[11px] uppercase tracking-[0.18em] text-cyan-50/50">
-                  현재 권한
+                  공개 범위
                 </span>
                 <span className="inline-flex items-center rounded-full border border-cyan-100/25 bg-cyan-200/10 px-3 py-1 text-xs text-cyan-50/90">
-                  {viewerMembershipTierLoading
-                    ? '확인중...'
-                    : viewerMembershipLabel}
+                  전체 공개
                 </span>
               </div>
-            </div>
-
-            <div className="flex items-center gap-2 md:self-start">
-              <button
-                type="button"
-                onClick={() => handleOpenShorts(studioPostIdFromQuery)}
-                disabled={shortsPosts.length === 0}
-                className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-full border border-cyan-100/30 bg-cyan-200/10 px-4 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-200/20 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
-              >
-                <Clapperboard className="h-4 w-4" />
-                숏폼 보기
-              </button>
             </div>
           </div>
 

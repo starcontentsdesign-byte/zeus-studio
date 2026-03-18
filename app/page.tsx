@@ -9,7 +9,6 @@ import AboutSection from '../components/AboutSection';
 import { useAuth } from './context/AuthContext';
 
 const SideMenu = dynamic(() => import('../components/SideMenu'));
-const ServicesSection = dynamic(() => import('../components/ServicesSection'));
 const StudioSectionWithSearchParams = dynamic(
   () => import('../components/StudioSectionWithSearchParams'),
   {
@@ -36,9 +35,6 @@ const AuthModal = dynamic(() => import('../components/AuthModal'), {
 const MyPageModal = dynamic(() => import('../components/MyPageModal'), {
   ssr: false
 });
-const CartModal = dynamic(() => import('../components/CartModal'), {
-  ssr: false
-});
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,10 +46,8 @@ export default function LandingPage() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [myPageOpen, setMyPageOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
 
-  const openCart = () => setCartOpen(true);
   const openMyPage = () => setMyPageOpen(true);
   const openMenu = () => {
     setHasOpenedMenu(true);
@@ -68,7 +62,6 @@ export default function LandingPage() {
         <SideMenu
           isOpen={isMenuOpen}
           onClose={() => setIsMenuOpen(false)}
-          onCartClick={openCart}
           onLoginClick={() => {
             setAuthMode('login');
             setAuthError(null);
@@ -80,7 +73,6 @@ export default function LandingPage() {
 
       <MainContent />
       <AboutSection />
-      <ServicesSection onOpenCart={openCart} />
       <div className="relative">
         <Suspense fallback={<div>Loading...</div>}>
           <StudioSectionWithSearchParams />
@@ -144,9 +136,6 @@ export default function LandingPage() {
 
       {myPageOpen ? (
         <MyPageModal open={myPageOpen} onOpenChange={setMyPageOpen} />
-      ) : null}
-      {cartOpen ? (
-        <CartModal open={cartOpen} onOpenChange={setCartOpen} />
       ) : null}
     </main>
   );

@@ -1,14 +1,34 @@
 export default function EnvCheckPage() {
-  const hasPayPalJsClientId = Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+  const checks = [
+    {
+      label: 'NEXT_PUBLIC_SUPABASE_URL',
+      ok: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL)
+    },
+    {
+      label: 'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+      ok: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+    },
+    {
+      label: 'SUPABASE_SERVICE_ROLE_KEY',
+      ok: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY)
+    },
+    {
+      label: 'NEXT_PUBLIC_SITE_URL',
+      ok: Boolean(process.env.NEXT_PUBLIC_SITE_URL)
+    }
+  ];
 
   return (
-    <div style={{ padding: 24, fontFamily: "system-ui" }}>
+    <div style={{ padding: 24, fontFamily: 'system-ui' }}>
       <h1>Env Check</h1>
-      <div>
-        PayPal JS SDK client env:{" "}
-        {hasPayPalJsClientId ? "NEXT_PUBLIC_PAYPAL_CLIENT_ID detected" : "NEXT_PUBLIC_PAYPAL_CLIENT_ID missing"}
-      </div>
-      <p>Open /api/env-check to verify server-side PAYPAL_CLIENT_ID / PAYPAL_ENV.</p>
+      <ul>
+        {checks.map((item) => (
+          <li key={item.label}>
+            {item.label}: {item.ok ? 'detected' : 'missing'}
+          </li>
+        ))}
+      </ul>
+      <p>Open /api/env-check to verify the minimal Supabase deployment env set.</p>
     </div>
   );
 }

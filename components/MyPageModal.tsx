@@ -32,7 +32,6 @@ const tabs: Array<{ key: TabKey; label: string; adminOnly?: boolean }> = [
   { key: 'profile', label: '회원 정보' },
   { key: 'orders', label: '주문 목록' },
   { key: 'community', label: '내 게시글' },
-  { key: 'membership', label: '멤버십' },
   { key: 'admin', label: '관리자 패널', adminOnly: true },
 ];
 

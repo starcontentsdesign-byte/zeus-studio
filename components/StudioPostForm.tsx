@@ -25,22 +25,7 @@ const STUDIO_POST_ACCESS_OPTIONS = [
   {
     value: 0,
     title: '일반 공개',
-    description: '로그인/구독 여부와 관계없이 본문 열람 가능'
-  },
-  {
-    value: 1,
-    title: '베이직 멤버십',
-    description: '월 4,900원 가로 영상 플랫폼 멤버십에서 열람 가능'
-  },
-  {
-    value: 2,
-    title: '플러스 멤버십',
-    description: '월 13,900원 숏폼 플랫폼 멤버십에서 열람 가능'
-  },
-  {
-    value: 3,
-    title: '프리미엄 멤버십',
-    description: '월 79,000원 포토+글 블로그 플랫폼 멤버십에서 열람 가능'
+    description: '현재 프로젝트는 모든 게시물을 전체 공개로 운영합니다.'
   }
 ] as const;
 
@@ -392,7 +377,7 @@ export default function StudioPostForm() {
                 2. 공개 범위
               </p>
               <p className="mt-1 text-sm text-white/65">
-                게시글/영상 접근 권한이 동일하게 적용됩니다.
+                현재는 멤버십 잠금 없이 모든 사진 게시물을 전체 공개로 올립니다.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -454,8 +439,7 @@ export default function StudioPostForm() {
                 3. 미디어 업로드
               </p>
               <p className="mt-1 text-sm text-white/65">
-                이미지(썸네일) + 영상(R2)을 함께 올리면 숏폼 UI에서 가장
-                자연스럽게 노출됩니다.
+                대표 이미지 한 장 기준으로 게시물을 생성합니다.
               </p>
             </div>
 
@@ -518,50 +502,22 @@ export default function StudioPostForm() {
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <p className="text-sm font-semibold text-white">
-                    숏폼 영상 (R2)
+                    추가 영상 업로드
                   </p>
-                  {videoFile ? (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/30 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-emerald-100">
-                      <CheckCircle2 className="h-3 w-3" />
-                      선택됨
-                    </span>
-                  ) : null}
+                  <span className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.08] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/70">
+                    OFF
+                  </span>
                 </div>
-                <input
-                  key={videoInputKey}
-                  id="studio-post-video-upload"
-                  type="file"
-                  accept="video/*"
-                  onChange={(event) =>
-                    setVideoFile(event.target.files?.[0] ?? null)
-                  }
-                  disabled={videoUploadPending}
-                  className="sr-only"
-                />
-                <label
-                  htmlFor="studio-post-video-upload"
-                  className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
-                >
-                  <Film className="h-4 w-4" />
-                  영상 선택
-                </label>
-                <p className="mt-2 text-xs text-white/55">
-                  {videoFile
-                    ? `${videoFile.name} · ${videoFile.type || 'unknown'} · ${formatBytes(videoFile.size)}`
-                    : '게시물 생성 직후 브라우저에서 R2로 업로드'}
-                </p>
-                {videoFile ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setVideoFile(null);
-                      setVideoInputKey((prev) => prev + 1);
-                    }}
-                    className="mt-2 text-xs text-white/65 underline underline-offset-2 hover:text-white"
-                  >
-                    영상 선택 해제
-                  </button>
-                ) : null}
+                <div className="flex min-h-[128px] flex-col items-center justify-center rounded-xl border border-dashed border-white/15 bg-black/20 px-4 py-5 text-center">
+                  <Film className="h-5 w-5 text-white/45" />
+                  <p className="mt-3 text-sm font-medium text-white">
+                    R2 영상 업로드는 현재 비활성화됨
+                  </p>
+                  <p className="mt-2 text-xs leading-relaxed text-white/55">
+                    이 프로젝트는 사진 게시물 중심으로 운영해서 제목, 본문,
+                    대표 이미지만 저장합니다.
+                  </p>
+                </div>
               </div>
             </div>
           </section>
@@ -575,7 +531,7 @@ export default function StudioPostForm() {
               </p>
               <span className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.08] px-2 py-1 text-[10px] text-white/70">
                 <Clapperboard className="h-3 w-3" />
-                Studio Shorts
+                Photo Post
               </span>
             </div>
 
@@ -603,13 +559,13 @@ export default function StudioPostForm() {
                   <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center text-white/55">
                     <UploadCloud className="h-8 w-8" />
                     <p className="px-4 text-xs">
-                      이미지 또는 영상을 선택하면 미리보기 표시
+                      대표 이미지를 선택하면 미리보기가 표시됩니다
                     </p>
                   </div>
                 )}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3">
                   <p className="line-clamp-2 text-sm font-semibold text-white">
-                    업로드 후 스튜디오 숏폼 피드에 노출됩니다
+                    업로드 후 스튜디오 사진 게시물로 노출됩니다
                   </p>
                   <p className="mt-1 text-[11px] text-white/75">
                     {selectedAccessOption.title}
@@ -621,11 +577,8 @@ export default function StudioPostForm() {
             <div className="mt-3 space-y-2 rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-xs text-white/70">
               <p className="font-semibold text-white">업로드 체크리스트</p>
               <p>1. 제목/내용 입력</p>
-              <p>2. 공개 범위 선택</p>
-              <p>3. 이미지 또는 영상 추가</p>
-              <p className="text-white/60">
-                영상은 게시글 생성 후 자동으로 R2 업로드가 이어집니다.
-              </p>
+              <p>2. 대표 이미지 선택</p>
+              <p>3. 전체 공개 사진 게시물로 등록</p>
             </div>
           </div>
         </aside>
@@ -633,15 +586,11 @@ export default function StudioPostForm() {
 
       <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-white/10 bg-black/25 p-4 md:flex-row md:items-center md:justify-between">
         <p className="text-xs text-white/65">
-          현재 권한:
+          현재 상태:
           <span className="ml-1 font-semibold text-white">
-            {selectedAccessOption.title}
+            사진 게시물 공개
           </span>
-          {requiredMembershipLevel === 0 ? (
-            <span className="ml-1 text-emerald-200">(공개)</span>
-          ) : (
-            <span className="ml-1 text-amber-200">(멤버십 전용)</span>
-          )}
+          <span className="ml-1 text-emerald-200">(ON)</span>
         </p>
         <SubmitButton extraPending={videoUploadPending} />
       </div>

@@ -10,7 +10,6 @@ import {
 } from 'react';
 import OrderDetailModal from '@/components/OrderDetailModal';
 import StudioPostForm from '@/components/StudioPostForm';
-import StudioMediaAdminManager from '@/components/StudioMediaAdminManager';
 import { useAuth } from '@/app/context/AuthContext';
 import ActionButton from '@/components/ui/ActionButton';
 import PillTab from '@/components/ui/PillTab';
@@ -152,13 +151,12 @@ type Props = {
 
 type AdminTabKey =
   | 'members'
-  | 'service-posts'
   | 'studio-posts'
   | 'community-posts'
   | 'daily-metrics';
 
 type MemberOrdersTabKey = 'shipping_todo' | 'shipping_done';
-type StudioSectionTabKey = 'list' | 'create' | 'media';
+type StudioSectionTabKey = 'list' | 'create';
 
 type AdminServicePostDraft = {
   title: string;
@@ -1465,7 +1463,7 @@ export default function MyPageAdminPanel({ enabled }: Props) {
         <div>
           <h3 className="text-lg font-semibold tracking-tight text-white">관리자 패널</h3>
           <p className="mt-1 text-sm text-white/60">
-            회원/서비스/스튜디오 관리와 일일 방문·게시글 지표를 마이페이지 안에서 바로 확인합니다.
+            회원, 스튜디오 게시물, 커뮤니티 관리와 일일 지표를 한 번에 확인합니다.
           </p>
         </div>
         <ActionButton
@@ -1484,7 +1482,6 @@ export default function MyPageAdminPanel({ enabled }: Props) {
         <div className={segmentedWrapClass}>
           {[
             { key: 'members', label: `회원 관리 (${memberCountLabel})` },
-            { key: 'service-posts', label: `서비스 섹션 관리 (${servicePostCountLabel})` },
             { key: 'studio-posts', label: `스튜디오 섹션 관리 (${studioPostCountLabel})` },
             { key: 'community-posts', label: `커뮤니티 게시글 관리 (${communityPostCountLabel})` },
             { key: 'daily-metrics', label: '일일데이터' }
@@ -1590,11 +1587,6 @@ export default function MyPageAdminPanel({ enabled }: Props) {
                 const isBusy = busyMemberId === member.id;
                 const protectedAdmin = member.is_protected_admin;
                 const isEditingProfile = editingMemberProfileId === member.id;
-                const studioMembership = member.studio_membership;
-                const currentStudioTier = resolveMemberTierLevel(member);
-                const draftStudioTier = (membershipTierDrafts[member.id] ??
-                  currentStudioTier) as StudioMembershipTierLevel;
-                const membershipTierChanged = draftStudioTier !== currentStudioTier;
                 const memberProfileDraft = memberProfileDrafts[member.id] ?? {
                   name: member.name ?? member.full_name ?? '',
                   phone: member.phone ?? '',
@@ -1625,37 +1617,6 @@ export default function MyPageAdminPanel({ enabled }: Props) {
                             {member.address ? `· 주소: ${member.address}` : ''}
                           </p>
                         )}
-                        <div className="mt-2 rounded-xl border border-white/10 bg-white/5 p-3">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/55">
-                              Studio Membership
-                            </p>
-                            <span
-                              className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${
-                                studioMembership?.has_active_subscription
-                                  ? 'border-emerald-300/30 bg-emerald-500/15 text-emerald-100'
-                                  : 'border-white/15 bg-white/5 text-white/70'
-                              }`}
-                            >
-                              {studioMembership?.has_active_subscription ? 'ACTIVE' : 'INACTIVE'}
-                            </span>
-                            {studioMembership?.subscription_status && (
-                              <span className="text-[11px] text-white/60">
-                                PayPal: {studioMembership.subscription_status}
-                              </span>
-                            )}
-                          </div>
-                          <p className="mt-2 text-xs text-white/75">
-                            현재 등급: {getStudioMembershipTierLabel(currentStudioTier)}
-                          </p>
-                          <p className="mt-1 text-xs text-white/70">
-                            선택 멤버십: {studioMembership?.selected_membership ?? '미가입'}
-                          </p>
-                          <p className="mt-1 text-xs text-white/55">
-                            구독 날짜: {formatDate(studioMembership?.subscribed_at ?? null)} · 결제예정일:{' '}
-                            {formatDate(studioMembership?.next_billing_at ?? null)}
-                          </p>
-                        </div>
                       </div>
 
                       <div className="flex items-center justify-end gap-2 flex-wrap">
@@ -1697,41 +1658,6 @@ export default function MyPageAdminPanel({ enabled }: Props) {
                           disabled={isBusy}
                         >
                           {isEditingProfile ? '닫기' : '회원정보 수정'}
-                        </ActionButton>
-                        <select
-                          value={String(draftStudioTier)}
-                          onChange={(e) =>
-                            setMembershipTierDrafts((prev) => ({
-                              ...prev,
-                              [member.id]: normalizeRequiredMembershipLevel(
-                                e.target.value
-                              ) as StudioMembershipTierLevel
-                            }))
-                          }
-                          className="h-9 rounded-full border border-white/20 bg-white/10 px-3 pr-8 text-sm font-medium text-white shadow-sm backdrop-blur-sm outline-none focus:ring-2 focus:ring-white/40"
-                          disabled={isBusy}
-                        >
-                          {STUDIO_MEMBERSHIP_TIER_OPTIONS.map((option) => (
-                            <option
-                              key={`member-tier-${member.id}-${option.level}`}
-                              value={String(option.level)}
-                              className="bg-neutral-900"
-                            >
-                              {option.level === 0
-                                ? option.title
-                                : `${option.title} (${option.description})`}
-                            </option>
-                          ))}
-                        </select>
-                        <ActionButton
-                          type="button"
-                          onClick={() => void handleStudioMembershipManage(member)}
-                          variant="secondary"
-                          size="sm"
-                          className={appleFontClass}
-                          disabled={isBusy || !membershipTierChanged}
-                        >
-                          {membershipTierChanged ? '멤버십 저장' : '멤버십 유지'}
                         </ActionButton>
                         <ActionButton
                           type="button"
@@ -1845,8 +1771,7 @@ export default function MyPageAdminPanel({ enabled }: Props) {
           <div className={segmentedWrapClass}>
             {[
               { key: 'list', label: '게시글 목록/수정' },
-              { key: 'create', label: '게시글 업로드' },
-              { key: 'media', label: '추가 미디어(R2)' }
+              { key: 'create', label: '게시글 업로드' }
             ].map((tab) => (
               <PillTab
                 key={tab.key}
@@ -1859,7 +1784,7 @@ export default function MyPageAdminPanel({ enabled }: Props) {
             ))}
           </div>
           <p className="mt-2 text-xs text-white/45">
-            `게시글 업로드`는 스튜디오 게시글 생성용, `추가 미디어(R2)`는 이미 만든 게시글에 영상/추가 이미지를 연결하는 고급 관리용입니다.
+            사진 게시물 중심으로 제목, 본문, 대표 이미지를 관리합니다.
           </p>
         </div>
       )}
@@ -1869,7 +1794,7 @@ export default function MyPageAdminPanel({ enabled }: Props) {
           <div className="mb-4 flex flex-col gap-1">
             <p className="text-sm font-medium text-white">스튜디오 섹션 관리</p>
             <p className="text-xs text-white/55">
-              `studio_posts` 목록 관리(수정/삭제), 게시글 생성, R2 미디어 연결을 이 섹션에서 함께 처리합니다.
+              `studio_posts` 목록 관리와 게시글 생성/수정을 이 섹션에서 처리합니다.
             </p>
           </div>
           <div className="space-y-3">
@@ -1906,9 +1831,7 @@ export default function MyPageAdminPanel({ enabled }: Props) {
                         <p className="mt-1 text-xs text-white/45">
                           생성일: {formatDate(post.created_at)}
                         </p>
-                        <p className="mt-1 text-xs text-white/45">
-                          접근 권한: {getStudioPostMembershipLabel(currentMembershipLevel)}
-                        </p>
+                        <p className="mt-1 text-xs text-white/45">공개 상태: 전체 공개</p>
                       </div>
                       <div className="flex items-center justify-end gap-2 flex-wrap">
                         <ActionButton
@@ -1949,28 +1872,6 @@ export default function MyPageAdminPanel({ enabled }: Props) {
                             }
                             disabled={isBusy}
                           />
-                        </div>
-                        <div className="grid gap-2">
-                          <label className="text-xs uppercase tracking-[0.18em] text-white/50">
-                            접근 권한
-                          </label>
-                          <select
-                            className={inputClass}
-                            value={String(draft.required_membership_level)}
-                            onChange={(e) =>
-                              handlePostDraftChange(
-                                post.id,
-                                'required_membership_level',
-                                e.target.value
-                              )
-                            }
-                            disabled={isBusy}
-                          >
-                            <option value="0">일반 공개</option>
-                            <option value="1">베이직 멤버십 (월 4,900원 · 가로 영상)</option>
-                            <option value="2">플러스 멤버십 (월 13,900원 · 숏폼)</option>
-                            <option value="3">프리미엄 멤버십 (월 79,000원 · 포토+글 블로그)</option>
-                          </select>
                         </div>
                         <div className="grid gap-2">
                           <label className="text-xs uppercase tracking-[0.18em] text-white/50">
@@ -2026,18 +1927,11 @@ export default function MyPageAdminPanel({ enabled }: Props) {
           <div className="mb-1">
             <p className="text-sm font-medium text-white">Studio 게시글 업로드</p>
             <p className="mt-1 text-xs text-white/55">
-              스튜디오 섹션 메인 게시글(썸네일/본문/선택 동영상)을 생성합니다.
+              스튜디오 섹션 메인 사진 게시글(썸네일/본문)을 생성합니다.
             </p>
           </div>
           <StudioPostForm />
         </div>
-      )}
-
-      {activeTab === 'studio-posts' && studioSectionTab === 'media' && (
-        <StudioMediaAdminManager
-          enabled={enabled}
-          onRequestCreatePost={() => setStudioSectionTab('create')}
-        />
       )}
 
       {activeTab === 'community-posts' && (
