@@ -37,7 +37,7 @@ import { getAccentMeta } from '@/components/architecture/graph-types';
  * Notes:
  * - "레거시 Supabase Storage URL"과 일부 관리 플로우는 마이그레이션 코드 기준의
  *   보수적 추론을 포함한다.
- * - 전체 시각화는 xenico100/real_enico 저장소를 2026-03-16 기준으로 분석해
+ * - 전체 시각화는 원본 real_enico 저장소를 2026-03-16 기준으로 분석해
  *   수동 배치한 노드 데이터다.
  */
 
