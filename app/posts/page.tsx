@@ -14,6 +14,9 @@ type PageProps = {
   searchParams?: Record<string, string | string[] | undefined>;
 };
 
+const isStudioPostsPermissionError = (message: string | null | undefined) =>
+  Boolean(message?.toLowerCase().includes('permission denied for table studio_posts'));
+
 const formatDateTime = (value: string) =>
   new Intl.DateTimeFormat('ko-KR', {
     dateStyle: 'medium',
@@ -77,7 +80,7 @@ export default async function PostsPage({ searchParams }: PageProps) {
       supabase.auth.getUser()
     ]);
 
-    if (postsError) {
+    if (postsError && !isStudioPostsPermissionError(postsError.message)) {
       errorMessage = '게시물 목록을 불러오지 못했습니다.';
     } else {
       posts = (postsData ?? []) as StudioPostListRow[];

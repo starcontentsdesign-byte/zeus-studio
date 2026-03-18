@@ -10,6 +10,9 @@ type PostPayload = {
   content?: string;
 };
 
+const isStudioPostsPermissionError = (error: { message?: string | null } | null | undefined) =>
+  Boolean(error?.message?.toLowerCase().includes('permission denied for table studio_posts'));
+
 const createRouteSupabaseClient = async () => {
   const cookieStore = await cookies();
 
@@ -47,6 +50,10 @@ export async function GET(request: Request) {
     .limit(limit);
 
   if (error) {
+    if (isStudioPostsPermissionError(error)) {
+      return NextResponse.json({ posts: [] });
+    }
+
     return NextResponse.json(
       { message: '게시물 목록을 불러오지 못했습니다.' },
       { status: 500 }
