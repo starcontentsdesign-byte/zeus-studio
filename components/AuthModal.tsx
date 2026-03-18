@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 
@@ -29,16 +29,7 @@ export default function AuthModal({
   loading = false,
   error = null,
 }: Props) {
-  const supabase = useMemo(() => createClient(), []);
-  const appleFontClass =
-    '[font-family:var(--font-sans),"IBM Plex Sans KR","Pretendard",sans-serif]';
-  const closeButtonClass =
-    `y2k-button y2k-button-ghost y2k-button-icon ${appleFontClass}`;
-  const tabGroupClass =
-    `y2k-tab-group inline-flex items-center gap-1 p-1 ${appleFontClass}`;
-  const tabButtonBase = `relative px-0 py-2 pr-5 text-sm font-medium tracking-[0.08em] no-underline transition-colors duration-200 ease-in-out after:absolute after:bottom-0 after:left-0 after:h-px after:w-[calc(100%-1.25rem)] after:origin-left after:scale-x-0 after:bg-current after:opacity-70 after:transition-transform after:duration-200 focus-visible:outline-none focus-visible:ring-0 ${appleFontClass}`;
-  const primaryButtonClass = `y2k-button y2k-button-primary w-full justify-center !min-h-12 !rounded-[1rem] !text-[0.8rem] disabled:opacity-50 ${appleFontClass}`;
-  const secondaryButtonClass = `y2k-button y2k-button-accent w-full justify-center !min-h-12 !rounded-[1rem] !text-[0.8rem] disabled:opacity-50 ${appleFontClass}`;
+  const supabase = createClient();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -51,10 +42,19 @@ export default function AuthModal({
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
   useEffect(() => {
-    if (!open) return;
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', onKey);
+    };
   }, [open, onClose]);
 
   useEffect(() => {
@@ -114,129 +114,128 @@ export default function AuthModal({
   };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-[60] bg-[rgba(0,0,0,0.08)] backdrop-blur-[1px]" onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Modal */}
-      <div className="fixed inset-0 z-[61] flex items-end justify-center p-2 pt-12 sm:items-center sm:p-4">
-        <div
-          className={`max-h-[calc(100dvh-1rem)] w-full max-w-md overflow-y-auto rounded-[0.2rem] border border-stone-900/10 bg-[#f8fbff] shadow-none ${appleFontClass}`}
+      <div className="relative z-10 w-full max-w-md rounded-2xl bg-zinc-950 text-white shadow-2xl">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-6 top-6 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+          aria-label="닫기"
         >
-          <div className="flex items-center justify-between border-b border-stone-900/10 px-4 py-4 sm:px-6 sm:py-5">
-            <div className={tabGroupClass}>
-              <button
-                type="button"
-                onClick={() => onSwitchMode('login')}
-                className={`${tabButtonBase} ${
-                  mode === 'login'
-                    ? 'text-stone-950 after:scale-x-100'
-                    : 'text-stone-500 hover:text-stone-900'
-                }`}
-              >
-                로그인
-              </button>
-              <button
-                type="button"
-                onClick={() => onSwitchMode('signup')}
-                className={`${tabButtonBase} ${
-                  mode === 'signup'
-                    ? 'text-stone-950 after:scale-x-100'
-                    : 'text-stone-500 hover:text-stone-900'
-                }`}
-              >
-                회원가입
-              </button>
-            </div>
+          <X className="h-5 w-5" />
+        </button>
 
-            <button type="button" onClick={onClose} className={closeButtonClass} aria-label="닫기">
-              <X className="h-5 w-5" />
+        <div className="p-8">
+          <div className="mb-8 flex gap-4 border-b border-white/10">
+            <button
+              type="button"
+              onClick={() => onSwitchMode('login')}
+              className={`pb-4 px-2 text-lg transition-all ${
+                mode === 'login'
+                  ? 'border-b-2 border-white opacity-100'
+                  : 'opacity-60 hover:opacity-80'
+              }`}
+            >
+              로그인
+            </button>
+            <button
+              type="button"
+              onClick={() => onSwitchMode('signup')}
+              className={`pb-4 px-2 text-lg transition-all ${
+                mode === 'signup'
+                  ? 'border-b-2 border-white opacity-100'
+                  : 'opacity-60 hover:opacity-80'
+              }`}
+            >
+              회원가입
             </button>
           </div>
 
-          <div className="space-y-4 px-4 py-5 sm:px-6 sm:py-6">
-            {mode === 'signup' && (
-              <div>
-                <label className="mb-2 block text-xs text-stone-500">이름</label>
+          <div className="space-y-4">
+            {mode === 'signup' ? (
+              <div className="space-y-2">
+                <label className="text-sm opacity-80">이름</label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="y2k-input w-full px-4 py-3 text-sm text-stone-900 outline-none"
+                  className="w-full rounded-lg border border-white/10 bg-zinc-800 px-4 py-3 text-white outline-none transition-colors focus:border-white/30"
                   placeholder="홍길동"
                 />
               </div>
-            )}
+            ) : null}
 
-            <div>
-              <label className="mb-2 block text-xs text-stone-500">이메일</label>
+            <div className="space-y-2">
+              <label className="text-sm opacity-80">이메일</label>
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="y2k-input w-full px-4 py-3 text-sm text-stone-900 outline-none"
+                className="w-full rounded-lg border border-white/10 bg-zinc-800 px-4 py-3 text-white outline-none transition-colors focus:border-white/30"
                 placeholder="you@example.com"
               />
             </div>
 
-            <div>
-              <label className="mb-2 block text-xs text-stone-500">비밀번호</label>
+            <div className="space-y-2">
+              <label className="text-sm opacity-80">비밀번호</label>
               <input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 type="password"
-                className="y2k-input w-full px-4 py-3 text-sm text-stone-900 outline-none"
+                className="w-full rounded-lg border border-white/10 bg-zinc-800 px-4 py-3 text-white outline-none transition-colors focus:border-white/30"
                 placeholder="••••••••"
               />
             </div>
 
-            {error && <div className="text-sm text-red-400">{error}</div>}
-            {mode === 'login' && resetError && (
-              <div className="rounded-2xl border border-red-400/20 bg-red-100 p-3 text-sm text-red-800">
+            {error ? <div className="text-sm text-red-300">{error}</div> : null}
+            {mode === 'login' && resetError ? (
+              <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-200">
                 {resetError}
               </div>
-            )}
-            {mode === 'login' && resetMessage && (
-              <div className="rounded-2xl border border-stone-900/10 bg-stone-100/70 p-3 text-sm text-stone-700">
+            ) : null}
+            {mode === 'login' && resetMessage ? (
+              <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-sm text-white/80">
                 {resetMessage}
               </div>
-            )}
+            ) : null}
 
-            {mode === 'login' && (
-              <div className="flex items-center justify-end">
+            {mode === 'login' ? (
+              <div className="flex items-center justify-end text-xs text-white/60">
                 <button
                   type="button"
                   onClick={handleForgotPassword}
                   disabled={loading || resetLoading}
-                  className={`y2k-button y2k-button-ghost !min-h-11 !text-[0.74rem] disabled:cursor-not-allowed disabled:opacity-50 ${appleFontClass}`}
+                  className="transition-opacity hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {resetLoading ? '전송 중…' : '비밀번호 찾기'}
                 </button>
               </div>
-            )}
+            ) : null}
 
             <button
               type="button"
               onClick={submit}
               disabled={loading || resetLoading}
-              className={primaryButtonClass}
+              className="mt-6 w-full rounded-full bg-white py-3 font-medium text-black transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? '처리중…' : mode === 'login' ? '로그인' : '회원가입'}
             </button>
 
             <button
               type="button"
-              onClick={onGoogle}
+              onClick={() => onGoogle?.()}
               disabled={loading || resetLoading}
-              className={secondaryButtonClass}
+              className="w-full rounded-full border border-white/20 py-3 font-medium text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
             >
               Google로 계속
             </button>
 
-            <p className="text-xs leading-relaxed text-stone-500">
+            <p className="text-xs leading-relaxed text-white/50">
               계속 진행하면 서비스 약관 및 개인정보 처리방침에 동의하는 것으로 간주됩니다.
             </p>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

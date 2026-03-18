@@ -1,142 +1,91 @@
-'use client';
+import { ZeusApp } from '@/components/ZeusApp';
+import { DEFAULT_STUDIO_POST_SEEDS } from '@/utils/studio-default-posts';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
-import { Suspense, useState } from 'react';
-import dynamic from 'next/dynamic';
+export const dynamic = 'force-dynamic';
 
-import Header from '../components/Header';
-import MainContent from '../components/MainContent';
-import AboutSection from '../components/AboutSection';
-import { useAuth } from './context/AuthContext';
+type StudioLandingPost = {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string | null;
+  createdAt: string | null;
+};
 
-const SideMenu = dynamic(() => import('../components/SideMenu'));
-const StudioSectionWithSearchParams = dynamic(
-  () => import('../components/StudioSectionWithSearchParams'),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 text-center text-sm text-stone-600 sm:px-6 lg:px-8">
-        Studio 콘텐츠를 불러오는 중...
-      </div>
-    )
-  }
+type CommunityLandingPost = {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string | null;
+  isNotice: boolean;
+};
+
+const fallbackStudioPosts: StudioLandingPost[] = DEFAULT_STUDIO_POST_SEEDS.slice(0, 8).map(
+  (seed, index) => ({
+    id: `seed-${index + 1}`,
+    title: seed.title,
+    content: seed.content,
+    imageUrl: seed.imageUrl,
+    createdAt: null
+  })
 );
-const CommunityBoard = dynamic(() => import('../components/CommunityBoard'), {
-  ssr: false,
-  loading: () => (
-    <div className="mx-auto w-full max-w-5xl px-4 pb-20 pt-12 text-center text-sm text-stone-600 sm:px-6 lg:px-8">
-      커뮤니티를 불러오는 중...
-    </div>
-  )
-});
-const Footer = dynamic(() => import('../components/Footer'));
-const AuthModal = dynamic(() => import('../components/AuthModal'), {
-  ssr: false
-});
-const MyPageModal = dynamic(() => import('../components/MyPageModal'), {
-  ssr: false
-});
 
-export default function LandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [hasOpenedMenu, setHasOpenedMenu] = useState(false);
+export default async function Page() {
+  let initialStudioPosts = fallbackStudioPosts;
+  let initialCommunityPosts: CommunityLandingPost[] = [];
 
-  // ✅ Auth modal state (서비스 팝업이랑 같은 패턴)
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [authLoading, setAuthLoading] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [myPageOpen, setMyPageOpen] = useState(false);
-  const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
+  const hasSupabaseConfig =
+    Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+    Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-  const openMyPage = () => setMyPageOpen(true);
-  const openMenu = () => {
-    setHasOpenedMenu(true);
-    setIsMenuOpen(true);
-  };
+  if (hasSupabaseConfig) {
+    try {
+      const supabase = createSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      ) as any;
+      const [studioResult, communityResult] = await Promise.all([
+        supabase
+          .from('studio_posts')
+          .select('id,title,content,image_url,created_at')
+          .order('created_at', { ascending: false })
+          .limit(8),
+        supabase
+          .from('community_posts')
+          .select('id,title,content,is_notice,created_at')
+          .order('is_notice', { ascending: false })
+          .order('created_at', { ascending: false })
+          .limit(4)
+      ]);
+
+      if (!studioResult.error && Array.isArray(studioResult.data) && studioResult.data.length > 0) {
+        initialStudioPosts = studioResult.data.map((post: any) => ({
+          id: String(post.id),
+          title: typeof post.title === 'string' && post.title.trim() ? post.title.trim() : 'Untitled',
+          content: typeof post.content === 'string' ? post.content : '',
+          imageUrl: typeof post.image_url === 'string' ? post.image_url : null,
+          createdAt: typeof post.created_at === 'string' ? post.created_at : null
+        }));
+      }
+
+      if (!communityResult.error && Array.isArray(communityResult.data)) {
+        initialCommunityPosts = communityResult.data.map((post: any) => ({
+          id: String(post.id),
+          title: typeof post.title === 'string' && post.title.trim() ? post.title.trim() : '제목 없음',
+          content: typeof post.content === 'string' ? post.content : '',
+          createdAt: typeof post.created_at === 'string' ? post.created_at : null,
+          isNotice: Boolean(post.is_notice)
+        }));
+      }
+    } catch (error) {
+      console.error('Landing page data bootstrap failed', error);
+    }
+  }
 
   return (
-    <main className="relative min-h-screen overflow-hidden text-stone-900">
-      <Header onMenuClick={openMenu} />
-
-      {hasOpenedMenu ? (
-        <SideMenu
-          isOpen={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-          onLoginClick={() => {
-            setAuthMode('login');
-            setAuthError(null);
-            setAuthOpen(true);
-          }}
-          onMyPageClick={openMyPage}
-        />
-      ) : null}
-
-      <MainContent />
-      <AboutSection />
-      <div className="relative">
-        <Suspense fallback={<div>Loading...</div>}>
-          <StudioSectionWithSearchParams />
-        </Suspense>
-      </div>
-
-      <section id="community" className="section-shell pb-24 pt-8 md:pt-14">
-        <div className="tech-panel scanline animate-rise p-4 sm:p-6 md:p-8">
-          <CommunityBoard />
-        </div>
-      </section>
-
-      <Footer />
-
-      {/* ✅ 로그인 / 회원가입 모달 (서비스 팝업과 동일한 방식) */}
-      {authOpen ? (
-        <AuthModal
-          open={authOpen}
-          mode={authMode}
-          onClose={() => setAuthOpen(false)}
-          onSwitchMode={(mode) => {
-            setAuthMode(mode);
-            setAuthError(null);
-          }}
-          loading={authLoading}
-          error={authError}
-          onLogin={async (email, password) => {
-            try {
-              setAuthLoading(true);
-              setAuthError(null);
-              await signInWithEmail(email, password);
-              setAuthOpen(false);
-            } catch (e: any) {
-              setAuthError(e?.message ?? '로그인 실패');
-            } finally {
-              setAuthLoading(false);
-            }
-          }}
-          onSignup={async (name, email, password) => {
-            try {
-              setAuthLoading(true);
-              setAuthError(null);
-              await signUpWithEmail(name, email, password);
-              setAuthOpen(false);
-            } catch (e: any) {
-              setAuthError(e?.message ?? '회원가입 실패');
-            } finally {
-              setAuthLoading(false);
-            }
-          }}
-          onGoogle={() => {
-            setAuthError(null);
-            setAuthLoading(true);
-            signInWithGoogle().catch((e: any) => {
-              setAuthError(e?.message ?? 'Google 로그인 실패');
-              setAuthLoading(false);
-            });
-          }}
-        />
-      ) : null}
-
-      {myPageOpen ? (
-        <MyPageModal open={myPageOpen} onOpenChange={setMyPageOpen} />
-      ) : null}
-    </main>
+    <ZeusApp
+      initialStudioPosts={initialStudioPosts}
+      initialCommunityPosts={initialCommunityPosts}
+    />
   );
 }
