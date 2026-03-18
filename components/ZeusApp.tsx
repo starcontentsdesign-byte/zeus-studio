@@ -34,7 +34,7 @@ const getErrorMessage = (error: unknown, fallback: string) => {
 
 export function ZeusApp() {
   const router = useRouter();
-  const { user, signInWithEmail, signUpWithEmail, signOut } = useAuth();
+  const { user, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authDefaultTab, setAuthDefaultTab] = useState<AuthMode>('login');
@@ -181,6 +181,20 @@ export function ZeusApp() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setAuthPending(true);
+    setAuthError(null);
+
+    try {
+      await signInWithGoogle();
+      setAuthPending(false);
+    } catch (error) {
+      setAuthError(getErrorMessage(error, 'Google 로그인에 실패했습니다.'));
+      setAuthPending(false);
+      return;
+    }
+  };
+
   const handleCreatePost = () => {
     setIsMenuOpen(false);
     router.push('/posts/new');
@@ -227,6 +241,7 @@ export function ZeusApp() {
         defaultTab={authDefaultTab}
         onLogin={handleLogin}
         onSignup={handleSignup}
+        onGoogleLogin={handleGoogleLogin}
         loading={authPending}
         error={authError}
       />

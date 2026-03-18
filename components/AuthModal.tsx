@@ -11,6 +11,7 @@ type AuthModalProps = {
   defaultTab?: AuthMode;
   onLogin?: (email: string, password: string) => Promise<void> | void;
   onSignup?: (name: string, email: string, password: string) => Promise<void> | void;
+  onGoogleLogin?: () => Promise<void> | void;
   loading?: boolean;
   error?: string | null;
 };
@@ -21,6 +22,7 @@ export default function AuthModal({
   defaultTab = 'login',
   onLogin,
   onSignup,
+  onGoogleLogin,
   loading = false,
   error = null
 }: AuthModalProps) {
@@ -55,6 +57,10 @@ export default function AuthModal({
     }
 
     await onSignup?.(name.trim(), email.trim(), password);
+  };
+
+  const handleGoogleLogin = async () => {
+    await onGoogleLogin?.();
   };
 
   return (
@@ -154,6 +160,17 @@ export default function AuthModal({
               >
                 {loading ? '처리 중...' : '로그인'}
               </button>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={loading}
+                  className="w-full rounded-full border border-white/15 bg-transparent py-3 font-medium text-white transition-colors hover:border-white/30 hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Google로 계속하기
+                </button>
+              </div>
             </form>
           )}
 
@@ -236,6 +253,17 @@ export default function AuthModal({
               >
                 {loading ? '처리 중...' : '회원가입'}
               </button>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={loading}
+                  className="w-full rounded-full border border-white/15 bg-transparent py-3 font-medium text-white transition-colors hover:border-white/30 hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Google로 시작하기
+                </button>
+              </div>
             </form>
           )}
         </div>
