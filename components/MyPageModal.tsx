@@ -26,13 +26,14 @@ type TabKey = 'profile' | 'orders' | 'community' | 'membership' | 'admin';
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  defaultTab?: TabKey;
 };
 
 const tabs: Array<{ key: TabKey; label: string; adminOnly?: boolean }> = [
   { key: 'profile', label: '회원 정보' },
   { key: 'orders', label: '주문 목록' },
   { key: 'community', label: '내 게시글' },
-  { key: 'admin', label: '관리자 패널', adminOnly: true },
+  { key: 'admin', label: '관리자페이지', adminOnly: true },
 ];
 
 type UserProfileFormState = {
@@ -150,7 +151,11 @@ const toCommunityExcerpt = (content: string) => {
   return `${normalized.slice(0, 150)}...`;
 };
 
-export default function MyPageModal({ open, onOpenChange }: Props) {
+export default function MyPageModal({
+  open,
+  onOpenChange,
+  defaultTab = 'profile'
+}: Props) {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<TabKey>('profile');
@@ -234,6 +239,15 @@ export default function MyPageModal({ open, onOpenChange }: Props) {
       setActiveTab('profile');
     }
   }, [activeTab, isAdmin]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (defaultTab === 'admin' && !isAdmin) {
+      setActiveTab('profile');
+      return;
+    }
+    setActiveTab(defaultTab);
+  }, [open, defaultTab, isAdmin]);
 
   useEffect(() => {
     if (!open) return;

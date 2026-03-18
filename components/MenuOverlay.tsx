@@ -12,7 +12,7 @@ type MenuOverlayProps = {
   onLoginClick: () => void;
   onSignupClick: () => void;
   onLogoutClick: () => void;
-  onCreatePostClick: () => void;
+  onAdminPageClick: () => void;
 };
 
 const menuItems = [
@@ -32,7 +32,7 @@ export default function MenuOverlay({
   onLoginClick,
   onSignupClick,
   onLogoutClick,
-  onCreatePostClick,
+  onAdminPageClick,
 }: MenuOverlayProps) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -87,13 +87,13 @@ export default function MenuOverlay({
                   <span className="zeus-menu-account-badge">ADMIN</span>
                 ) : (
                   <p className="zeus-menu-account-note">
-                    관리자 계정으로 로그인하면 글쓰기 메뉴가 열린다.
+                    관리자 계정으로 로그인하면 관리자페이지 메뉴가 열린다.
                   </p>
                 )}
               </div>
             ) : (
               <p className="zeus-menu-account-note">
-                메뉴에서 로그인하면 관리자 계정으로 Studio 게시물 작성 가능.
+                메뉴에서 로그인하면 관리자 계정으로 관리자페이지를 열 수 있다.
               </p>
             )}
 
@@ -121,9 +121,9 @@ export default function MenuOverlay({
                     <button
                       type="button"
                       className="zeus-menu-action"
-                      onClick={onCreatePostClick}
+                      onClick={onAdminPageClick}
                     >
-                      Write Post
+                      관리자페이지
                     </button>
                   ) : null}
                   <button

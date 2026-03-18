@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { HeroSection } from '@/components/HeroSection';
 import MenuOverlay from '@/components/MenuOverlay';
+import MyPageModal from '@/components/MyPageModal';
 import ServicesSection from '@/components/ServicesSection';
 import StudioSection from '@/components/StudioSection';
 import { isAdminUserLike } from '@/utils/service-posts';
@@ -46,6 +47,8 @@ export function ZeusApp() {
   const [studioLoading, setStudioLoading] = useState(true);
   const [studioError, setStudioError] = useState<string | null>(null);
   const [studioPostIdFromQuery, setStudioPostIdFromQuery] = useState<string | null>(null);
+  const [isMyPageOpen, setIsMyPageOpen] = useState(false);
+  const [myPageDefaultTab, setMyPageDefaultTab] = useState<'profile' | 'admin'>('profile');
 
   const isAuthenticated = Boolean(user);
   const isAdmin = isAdminUserLike(user);
@@ -200,6 +203,13 @@ export function ZeusApp() {
     router.push('/posts/new');
   };
 
+  const handleOpenAdminPage = () => {
+    setAuthError(null);
+    setMyPageDefaultTab('admin');
+    setIsMenuOpen(false);
+    setIsMyPageOpen(true);
+  };
+
   return (
     <div className="zeus-app">
       <Header onMenuClick={() => setIsMenuOpen(true)} opaque={menuOpaque} />
@@ -213,7 +223,7 @@ export function ZeusApp() {
         onLoginClick={() => openAuthModal('login')}
         onSignupClick={() => openAuthModal('signup')}
         onLogoutClick={handleLogout}
-        onCreatePostClick={handleCreatePost}
+        onAdminPageClick={handleOpenAdminPage}
       />
 
       <main>
@@ -244,6 +254,12 @@ export function ZeusApp() {
         onGoogleLogin={handleGoogleLogin}
         loading={authPending}
         error={authError}
+      />
+
+      <MyPageModal
+        open={isMyPageOpen}
+        onOpenChange={setIsMyPageOpen}
+        defaultTab={myPageDefaultTab}
       />
 
       <button
