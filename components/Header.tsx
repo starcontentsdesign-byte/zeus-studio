@@ -1,47 +1,35 @@
-import React from 'react';
-import { Menu, ShoppingCart, User } from 'lucide-react';
+"use client";
+
+import { Menu } from "lucide-react";
+import { BRAND_NAME } from "@/utils/branding";
 
 interface HeaderProps {
   onMenuClick: () => void;
-  onCartClick: () => void;
-  onAuthClick: () => void;
-  cartItemCount: number;
 }
 
-export function Header({ onMenuClick, onCartClick, onAuthClick, cartItemCount }: HeaderProps) {
+export default function Header({ onMenuClick }: HeaderProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 px-8 py-6 flex items-start justify-between">
-      <div className="flex flex-col">
-        <span className="text-xs tracking-[0.3em] opacity-60">STUDIO</span>
-        <h1 className="text-3xl tracking-[0.2em] mt-1">ZEUS</h1>
-      </div>
-      
-      <div className="flex items-center gap-4">
-        <button
-          onClick={onAuthClick}
-          className="hover:opacity-70 transition-opacity"
-        >
-          <User className="w-6 h-6" />
-        </button>
-        
-        <button
-          onClick={onCartClick}
-          className="relative flex items-center gap-3 hover:opacity-70 transition-opacity"
-        >
-          <ShoppingCart className="w-6 h-6" />
-          {cartItemCount > 0 && (
-            <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-600 rounded-full flex items-center justify-center text-xs">
-              {cartItemCount}
-            </span>
-          )}
-        </button>
-        
-        <button
-          onClick={onMenuClick}
-          className="hover:opacity-70 transition-opacity"
-        >
-          <Menu className="w-6 h-6" />
-        </button>
+    <header className="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-4 sm:pt-4 md:px-8 md:pt-6">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 border-b border-stone-900/10 px-1 py-3 md:px-0 md:py-4">
+        <a href="#home" className="group flex min-w-0 items-center no-underline">
+          <div className="min-w-0">
+            <p className="display-font text-[0.82rem] tracking-[0.12em] text-stone-950 sm:text-sm md:text-base">
+              {BRAND_NAME}
+            </p>
+          </div>
+        </a>
+
+        <div className="flex items-center gap-2 md:gap-3">
+          <span className="tech-chip hidden md:inline-flex">Board Index</span>
+          <button
+            onClick={onMenuClick}
+            className="y2k-button y2k-button-ghost y2k-button-fade-micro group px-3 sm:px-4 !text-[0.7rem] !tracking-[0.16em]"
+            aria-label="메뉴 열기"
+          >
+            <span>ACCESS</span>
+            <Menu className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-[1px]" />
+          </button>
+        </div>
       </div>
     </header>
   );
