@@ -122,7 +122,7 @@ const getPayPalBanner = (
 };
 
 export default async function PostDetailPage({ params, searchParams }: PageProps) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     { data: postData, error },

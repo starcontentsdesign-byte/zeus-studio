@@ -4,10 +4,8 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/types_db';
 
-// Define a function to create a Supabase client for server-side operations
-// The function takes a cookie store created with next/headers cookies as an argument
-export const createClient = () => {
-  const cookieStore = cookies();
+export const createClient = async () => {
+  const cookieStore = await cookies();
 
   return createServerClient<Database>(
     // Pass Supabase URL and anonymous key from the environment to the client
@@ -25,7 +23,7 @@ export const createClient = () => {
         set(name: string, value: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value, ...options });
-          } catch (error) {
+          } catch {
             // If the set method is called from a Server Component, an error may occur
             // This can be ignored if there is middleware refreshing user sessions
           }
@@ -34,7 +32,7 @@ export const createClient = () => {
         remove(name: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value: '', ...options });
-          } catch (error) {
+          } catch {
             // If the remove method is called from a Server Component, an error may occur
             // This can be ignored if there is middleware refreshing user sessions
           }

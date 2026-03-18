@@ -49,7 +49,7 @@ export async function POST(request: Request) {
   let environment: string | null = null;
 
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError

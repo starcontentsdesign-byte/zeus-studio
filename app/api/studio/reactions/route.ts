@@ -155,7 +155,7 @@ export async function GET(request: Request) {
       return jsonError('유효하지 않은 게시글 ID입니다.', 400);
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user }
     } = await supabase.auth.getUser();
@@ -199,7 +199,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError

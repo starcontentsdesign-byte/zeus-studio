@@ -67,7 +67,7 @@ export async function GET(request: Request) {
   const category = searchParams.get('category');
   const includeAll = searchParams.get('all') === 'true';
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   if (includeAll) {
     const {
@@ -177,7 +177,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: authError

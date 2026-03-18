@@ -35,7 +35,7 @@ export async function PATCH(
       return jsonError('유효하지 않은 게시글 ID입니다.', 400);
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError
@@ -133,7 +133,7 @@ export async function DELETE(
       return jsonError('유효하지 않은 게시글 ID입니다.', 400);
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError

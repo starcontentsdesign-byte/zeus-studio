@@ -263,6 +263,76 @@
   color: #fff;
 }
 
+.zeus-menu-auth {
+  margin-top: 34px;
+}
+
+.zeus-menu-account {
+  display: grid;
+  gap: 8px;
+}
+
+.zeus-menu-account-label {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 11px;
+  letter-spacing: 0.36em;
+}
+
+.zeus-menu-account-email,
+.zeus-menu-account-note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.zeus-menu-account-badge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+}
+
+.zeus-menu-action-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.zeus-menu-action {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  transition: all 0.25s ease-in-out;
+}
+
+.zeus-menu-action:hover,
+.zeus-menu-action:focus-visible {
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.11);
+  color: #fff;
+}
+
+.zeus-menu-action--ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+}
+
 .zeus-home {
   position: relative;
   width: 100%;
@@ -276,7 +346,7 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: -1;
+  z-index: 0;
   min-width: 100%;
   min-height: 100%;
   width: auto;
@@ -288,6 +358,7 @@
 .zeus-home-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.9) 0%,
@@ -299,7 +370,7 @@
 
 .zeus-home-table {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   display: table;
   width: 100%;
   height: 100%;
@@ -422,12 +493,72 @@
   max-width: 1080px;
 }
 
+.zeus-studio-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 54px;
+}
+
+.zeus-studio-toolbar-copy {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.zeus-studio-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.zeus-studio-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  transition: all 0.25s ease-in-out;
+}
+
+.zeus-studio-action:hover,
+.zeus-studio-action:focus-visible {
+  border-color: rgba(255, 255, 255, 0.42);
+  color: #fff;
+}
+
+.zeus-studio-action--button {
+  cursor: pointer;
+}
+
+.zeus-studio-status {
+  margin: 26px 0 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+}
+
 .zeus-studio-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 60px;
   align-items: start;
   margin-top: 86px;
+}
+
+.zeus-studio-grid--posts {
+  gap: 34px;
+  margin-top: 58px;
 }
 
 .zeus-studio-card--large {
@@ -437,7 +568,72 @@
 .zeus-studio-image {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zeus-studio-post-card {
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  transition:
+    transform 0.28s ease,
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+.zeus-studio-post-card:hover,
+.zeus-studio-post-card:focus-visible,
+.zeus-studio-post-card.is-focused {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.46);
+}
+
+.zeus-studio-post-card--hero {
+  grid-row: span 2;
+}
+
+.zeus-studio-post-media {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #050505;
+}
+
+.zeus-studio-post-card--hero .zeus-studio-post-media {
+  aspect-ratio: 0.82 / 1;
+}
+
+.zeus-studio-post-body {
+  padding: 22px 24px 26px;
+}
+
+.zeus-studio-post-meta {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.zeus-studio-post-title {
+  margin: 0;
+  color: #fff;
+  font-size: 25px;
+  line-height: 1.24;
+}
+
+.zeus-studio-post-copy {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.zeus-studio-empty {
+  margin-top: 24px;
 }
 
 .zeus-footer {
@@ -594,6 +790,12 @@
     padding: 96px 0;
   }
 
+  .zeus-studio-toolbar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
   .zeus-about-grid,
   .zeus-footer-row {
     grid-template-columns: 1fr;
@@ -612,6 +814,10 @@
   }
 
   .zeus-studio-card--large {
+    grid-row: span 1;
+  }
+
+  .zeus-studio-post-card--hero {
     grid-row: span 1;
   }
 

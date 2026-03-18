@@ -12,7 +12,7 @@ export async function DELETE(_request: Request, { params }: RouteContext) {
     return NextResponse.json({ message: '잘못된 게시글 ID입니다.' }, { status: 400 });
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: authError

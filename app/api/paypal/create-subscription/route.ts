@@ -214,7 +214,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError
@@ -290,7 +290,7 @@ export async function POST(request: Request) {
   try {
     const requestUrl = new URL(request.url);
     const origin = requestUrl.origin;
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError

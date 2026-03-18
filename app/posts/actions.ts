@@ -170,7 +170,7 @@ const uploadStudioImage = async (
   const buffer = Buffer.from(await file.arrayBuffer());
 
   const adminClient = await getAdminStorageClient();
-  const supabase = createClient();
+  const supabase = await createClient();
   const storageClient = adminClient ?? supabase;
 
   const { error: uploadError } = await storageClient.storage
@@ -198,14 +198,14 @@ const removeStudioImageIfOwned = async (userId: string, imageUrl: string | null 
   if (!path.startsWith(`${userId}/`)) return;
 
   const adminClient = await getAdminStorageClient();
-  const supabase = createClient();
+  const supabase = await createClient();
   const storageClient = adminClient ?? supabase;
 
   await storageClient.storage.from(STUDIO_BUCKET).remove([path]);
 };
 
 const getAuthenticatedUser = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error
@@ -222,7 +222,7 @@ const getOwnedPost = async (
   postId: string,
   userId: string
 ): Promise<{ post: StudioPostRow | null; message?: string }> => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await (supabase as never)
     .from(STUDIO_POSTS_TABLE)
     .select('id,user_id,image_url')
@@ -275,6 +275,9 @@ async function createStudioPostInternal(formData: FormData): Promise<ActionResul
   const { supabase, user, error } = await getAuthenticatedUser();
   if (!user) {
     return { ok: false, message: error ?? '로그인이 필요합니다.' };
+  }
+  if (!isAdminLikeUser(user)) {
+    return { ok: false, message: '관리자만 게시물을 작성할 수 있습니다.' };
   }
   const safeRequiredMembershipLevel = isAdminLikeUser(user)
     ? requiredMembershipLevel

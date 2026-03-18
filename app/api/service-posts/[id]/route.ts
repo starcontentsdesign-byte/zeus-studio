@@ -24,7 +24,7 @@ const parseJsonBody = async <T,>(request: Request) => {
 };
 
 export async function GET(_request: Request, { params }: RouteContext) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const id = params.id;
 
   const {
@@ -110,7 +110,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     );
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: authError
@@ -204,7 +204,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 }
 
 export async function DELETE(_request: Request, { params }: RouteContext) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: authError

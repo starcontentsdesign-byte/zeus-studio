@@ -38,7 +38,7 @@ const validateProfilePayload = (input: {
 };
 
 export async function GET() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError
@@ -109,7 +109,7 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError

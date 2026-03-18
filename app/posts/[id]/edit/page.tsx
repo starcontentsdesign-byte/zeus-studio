@@ -17,7 +17,7 @@ type StudioPostRow = {
 };
 
 export default async function EditPostPage({ params }: PageProps) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const [
     { data: authData },
     { data: postData, error }

@@ -65,7 +65,7 @@ export default async function PostsPage({ searchParams }: PageProps) {
   })();
 
   if (isSupabaseConfigured) {
-    const supabase = createClient();
+    const supabase = await createClient();
     const [
       { data: postsData, error: postsError },
       { data: authData }

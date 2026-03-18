@@ -156,7 +156,7 @@ export async function GET(request: Request, { params }: RouteContext) {
     const previewMode =
       requestUrl.searchParams.get('preview') === '1' ||
       requestUrl.searchParams.get('preview') === 'true';
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError

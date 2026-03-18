@@ -1,7 +1,7 @@
 export function HeroSection() {
   return (
     <section id="home" className="zeus-home">
-      <video className="zeus-home-video" autoPlay muted loop playsInline>
+      <video className="zeus-home-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true">
         <source src="/images/hero-bg.mp4" type="video/mp4" />
       </video>
       <div className="zeus-home-overlay" />

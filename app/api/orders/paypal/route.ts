@@ -301,7 +301,7 @@ const recordServiceFilePurchases = async (params: {
 };
 
 export async function POST(request: Request) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError

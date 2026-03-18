@@ -30,7 +30,7 @@ export const hasAdminAccessForAuthUser = (user: User | null) => {
 };
 
 export async function getAdminApiContext() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const user = await getUser(supabase);
   const adminRole = getAuthUserRole(user);
   const isAdmin = hasAdminAccessForAuthUser(user);

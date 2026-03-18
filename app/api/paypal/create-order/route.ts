@@ -29,7 +29,7 @@ const normalizeAmount = (input: unknown) => {
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError

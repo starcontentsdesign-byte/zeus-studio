@@ -46,7 +46,7 @@ const jsonError = (message: string, status = 500, details?: unknown) =>
   NextResponse.json({ message, ...(details ? { details } : {}) }, { status });
 
 export async function POST(request: Request) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();

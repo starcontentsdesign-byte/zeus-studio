@@ -1,15 +1,20 @@
 import { redirect } from 'next/navigation';
 import StudioPostForm from '@/components/StudioPostForm';
 import { createClient } from '@/utils/supabase/server';
+import { isAdminUserLike } from '@/utils/service-posts';
 
 export default async function NewPostPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();
 
   if (!user) {
     redirect('/signin');
+  }
+
+  if (!isAdminUserLike(user)) {
+    redirect('/#studio');
   }
 
   return (

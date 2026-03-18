@@ -19,7 +19,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
     return jsonError('잘못된 서비스 게시글 ID입니다.', 400);
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: authError

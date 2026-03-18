@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ url: buildStubUrl(request), mode: 'stub' });
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user }
     } = await supabase.auth.getUser();

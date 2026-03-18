@@ -113,7 +113,7 @@ const buildAuthorNameMap = async (admin: ReturnType<typeof createAdminClient>, u
 
 export async function GET() {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user: viewerUser }
     } = await supabase.auth.getUser();
@@ -303,7 +303,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
       error: authError

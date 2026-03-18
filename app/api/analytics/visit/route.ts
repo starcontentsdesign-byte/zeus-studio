@@ -99,7 +99,7 @@ const withVisitorCookies = (
 };
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const existingVisitorId = cookieStore.get(VISITOR_COOKIE_KEY)?.value?.trim() ?? '';
   const visitorId = existingVisitorId || crypto.randomUUID();
   const nowMs = Date.now();
@@ -144,7 +144,7 @@ export async function POST(request: Request) {
 
   let userId: string | null = null;
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user }
     } = await supabase.auth.getUser();
