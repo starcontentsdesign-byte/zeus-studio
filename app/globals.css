@@ -12,6 +12,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-color: rgba(124, 124, 124, 0.92) rgba(24, 24, 24, 0.96);
 }
 
 body {
@@ -61,4 +62,19 @@ img {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid rgba(24, 24, 24, 0.96);
+  background: linear-gradient(180deg, rgba(144, 144, 144, 0.96), rgba(92, 92, 92, 0.96));
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(24, 24, 24, 0.96);
 }
