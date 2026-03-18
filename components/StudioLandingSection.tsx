@@ -48,16 +48,16 @@ export default function StudioLandingSection({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-4">
             <Link
               href="/posts"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] transition hover:bg-white hover:text-black"
+              className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
             >
               ALL POSTS
             </Link>
             <Link
               href={isAuthenticated ? '/posts/new' : '/signin'}
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] transition hover:bg-white hover:text-black"
+              className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
             >
               WRITE POST
             </Link>

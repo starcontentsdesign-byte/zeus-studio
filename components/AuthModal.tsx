@@ -225,7 +225,7 @@ export default function AuthModal({
               type="button"
               onClick={() => onGoogle?.()}
               disabled={loading || resetLoading}
-              className="w-full rounded-full border border-white/20 py-3 font-medium text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full py-2 text-sm tracking-[0.16em] text-white/72 transition-opacity hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Google로 계속
             </button>

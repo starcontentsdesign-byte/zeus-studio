@@ -13,6 +13,7 @@ import { HeroSection } from '@/components/HeroSection';
 import MenuOverlay from '@/components/MenuOverlay';
 import MyPageModal from '@/components/MyPageModal';
 import StudioLandingSection from '@/components/StudioLandingSection';
+import styles from '@/components/zeus-classic.module.css';
 
 type StudioLandingPost = {
   id: string;
@@ -66,7 +67,7 @@ export function ZeusApp({
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className={`${styles.root} min-h-screen bg-black text-white`}>
       <Header
         onMenuClick={() => setIsMenuOpen(true)}
         onAuthClick={openLogin}
@@ -102,16 +103,16 @@ export function ZeusApp({
                 랜딩 디자인만 원래 ZEUS 톤으로 되돌리고, 운영은 별도 화면으로 빼놨다.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               <Link
                 href="/posts"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] transition hover:bg-white hover:text-black"
+                className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
               >
                 OPEN POSTS
               </Link>
               <Link
                 href="/community"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] transition hover:bg-white hover:text-black"
+                className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
               >
                 OPEN BOARD
               </Link>

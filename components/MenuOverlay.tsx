@@ -128,14 +128,14 @@ export default function MenuOverlay({
             <div className="flex flex-col gap-3">
               <button
                 onClick={handleAccountClick}
-                className="rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] text-white transition hover:bg-white hover:text-black"
+                className="py-2 text-left text-xl tracking-wide text-white transition-opacity hover:opacity-70"
               >
                 {isAuthenticated ? 'MY PAGE' : 'LOGIN'}
               </button>
               {!isAuthenticated ? (
                 <button
                   onClick={handleSignupOpen}
-                  className="rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] text-white transition hover:bg-white hover:text-black"
+                  className="py-2 text-left text-xl tracking-wide text-white transition-opacity hover:opacity-70"
                 >
                   SIGN UP
                 </button>

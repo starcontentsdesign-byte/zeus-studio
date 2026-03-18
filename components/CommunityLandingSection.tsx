@@ -48,16 +48,16 @@ export default function CommunityLandingSection({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-4">
             <Link
               href="/community"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] transition hover:bg-white hover:text-black"
+              className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
             >
               OPEN BOARD
             </Link>
             <Link
               href={isAuthenticated ? '/community' : '/signin'}
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-3 text-sm tracking-[0.14em] transition hover:bg-white hover:text-black"
+              className="inline-flex items-center justify-center py-2 text-sm tracking-[0.22em] text-white/78 transition-opacity hover:opacity-70"
             >
               WRITE IN BOARD
             </Link>
