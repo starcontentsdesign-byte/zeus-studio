@@ -21,11 +21,11 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  eslint: {
-    ignoreDuringBuilds: true
-  },
   typescript: {
     ignoreBuildErrors: true
+  },
+  turbopack: {
+    root: __dirname
   },
   async headers() {
     return [
